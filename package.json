@@ -1,0 +1,27 @@
+{
+  "name": "ramda-destruct",
+  "version": "1.0.0",
+  "description": "Cleans up required ramda functions when using destructuring assignment",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "test-watch": "mocha -w"
+  },
+  "bin": {
+    "ramda-destruct": "./bin/cli"
+  },
+  "keywords": [],
+  "author": "Raine Virta <raine.virta@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
+  },
+  "dependencies": {
+    "eslint": "^1.5.1",
+    "ramda": "^0.17.1",
+    "read-file-stdin": "^0.2.0",
+    "splice-string": "^1.0.0"
+  }
+}

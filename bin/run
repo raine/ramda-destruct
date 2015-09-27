@@ -1,0 +1,4 @@
+#!/bin/sh
+
+MAKEFLAGS="-j8" make > /dev/null
+./bin/cli "$@"
