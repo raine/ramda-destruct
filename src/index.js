@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const linter = require('eslint').linter;
 const { test, reduce, always, T, cond, propEq, match, nth, pipe, functions, contains, __, useWith, identity, allPass, prop, lens, split, join, compose, map, over, toUpper, curry, adjust, findIndex, either } = require('ramda');
 const removeFromObjDstr = require('./remove-from-obj-dstr');
@@ -30,33 +28,29 @@ const ruleEq = useWith(propEq('ruleId'), identity);
 const lines = split('\n');
 const unlines = join('\n');
 const lineLens = lens(lines, unlines);
-const mapLines = curry((fn, str) =>
-  over(lineLens, map(fn), str));
 const adjustLine = curry((fn, n, str) =>
-  over(lineLens, adjust(fn, n), str))
+  over(lineLens, adjust(fn, n), str));
 const messageContainsRamdaFn =
   pipe(prop('message'), parseName, isRamdaFunction);
 
 const handleEslintMessage = (code, message) =>
   cond([
     [ allPass([
-        ruleEq('no-unused-vars'),
-        pipe(prop('source'), lineImportsRamda),
-        messageContainsRamdaFn
-      ]), (message) => {
-        const name = parseName(message.message);
-        return adjustLine(removeFromObjDstr(name), message.line - 1, code);
-      }
-    ],
+      ruleEq('no-unused-vars'),
+      pipe(prop('source'), lineImportsRamda),
+      messageContainsRamdaFn
+    ]), (message) => {
+      const name = parseName(message.message);
+      return adjustLine(removeFromObjDstr(name), message.line - 1, code);
+    }],
     [ allPass([
-        ruleEq('no-undef'),
-        messageContainsRamdaFn,
-      ]), (message) => {
-        const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
-        const name = parseName(message.message);
-        return adjustLine(addToObjDstr(name), ramdaImportLine, code);
-      }
-    ],
+      ruleEq('no-undef'),
+      messageContainsRamdaFn
+    ]), (message) => {
+      const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
+      const name = parseName(message.message);
+      return adjustLine(addToObjDstr(name), ramdaImportLine, code);
+    } ],
     [ T, always(code) ]
   ])(message);
 
@@ -69,7 +63,7 @@ const main = (process) => {
     const messages = linter.verify(input, ESLINT_OPTS);
     const output = handleEslintOutput(messages, input);
     process.stdout.write(output);
-  })
+  });
 };
 
 main(process);
