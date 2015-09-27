@@ -1,6 +1,6 @@
 {
   "name": "ramda-destruct",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cleans up required ramda functions when using destructuring assignment",
   "scripts": {
     "test": "mocha",
@@ -10,7 +10,9 @@
     "ramda-destruct": "./bin/cli"
   },
   "repository": "raine/ramda-destruct",
-  "keywords": ["ramda"],
+  "keywords": [
+    "ramda"
+  ],
   "author": "Raine Virta <raine.virta@gmail.com>",
   "license": "ISC",
   "devDependencies": {
