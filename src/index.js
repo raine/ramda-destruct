@@ -1,5 +1,5 @@
 const linter = require('eslint').linter;
-const { test, reduce, always, T, cond, propEq, match, nth, pipe, functions, contains, __, useWith, identity, allPass, prop, lens, split, join, compose, map, over, toUpper, curry, adjust, findIndex, either } = require('ramda');
+const { has, test, reduce, always, T, cond, propEq, match, nth, pipe, useWith, identity, allPass, prop, lens, split, join, over, curry, adjust, findIndex, either, __ } = require('ramda');
 const removeFromObjDstr = require('./remove-from-obj-dstr');
 const addToObjDstr = require('./add-to-obj-dstr');
 const readFileStdin = require('read-file-stdin');
@@ -17,8 +17,7 @@ const ESLINT_OPTS = {
   }
 };
 
-const ramdaFunctions = functions(require('ramda'));
-const isRamdaFunction = contains(__, ramdaFunctions);
+const isRamdaProperty = has(__, require('ramda'));
 const lineImportsRamda =
   either(test(/require\(['"]ramda['"]\)/),
          test(/from ['"]ramda['"]/));
@@ -31,7 +30,7 @@ const lineLens = lens(lines, unlines);
 const adjustLine = curry((fn, n, str) =>
   over(lineLens, adjust(fn, n), str));
 const messageContainsRamdaFn =
-  pipe(prop('message'), parseName, isRamdaFunction);
+  pipe(prop('message'), parseName, isRamdaProperty);
 
 const handleEslintMessage = (code, message) =>
   cond([

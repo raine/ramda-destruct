@@ -12,7 +12,7 @@ const addToObjDstr = curry((name, line) => {
   const removeAfterStart = braceEnd - braceStart + 1;
   const hasSpaceFirst = isSpace(head(insideBraces));
   // good enough for ramda
-  const names = insideBraces.match(/[a-zA-Z0-9]+/g)
+  const names = insideBraces.match(/[a-zA-Z0-9_]+/g)
 
   return pipe(
     append(__, names),
