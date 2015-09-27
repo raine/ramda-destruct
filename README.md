@@ -1,4 +1,4 @@
-# ramda-destruct
+# ramda-destruct [![npm version](https://badge.fury.io/js/ramda-destruct.svg)](https://www.npmjs.com/package/ramda-destruct)
 
 ![demo](https://raw.githubusercontent.com/raine/ramda-destruct/media/demo.gif)
 
@@ -13,19 +13,21 @@ npm install -g ramda-destruct
 
 ## usage
 
-### file as argument
+Prints the modified file contents to stdout.
+
+#### file as argument
 
 ```sh
 ramda-destruct path/to/file.js
 ```
 
-### stdin
+#### stdin
 
 ```sh
 cat path/to/file.js | ramda-destruct
 ```
 
-### vim
+#### vim
 
 ```
 %!ramda-destruct
