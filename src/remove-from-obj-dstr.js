@@ -3,6 +3,7 @@ const isSpace = equals(' ');
 const spliceStr = curryN(4, require('splice-string'));
 const fmt1 = curryN(2, require('util').format);
 
+// TODO: merge with addToObjDstr
 const removeFromObjDstr = curry((name, line) => {
   const m = line.match(/{(.*?)}/)
   if (!m) throw new Error('...');
