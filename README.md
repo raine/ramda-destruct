@@ -1,6 +1,6 @@
 # ramda-destruct [![npm version](https://badge.fury.io/js/ramda-destruct.svg)](https://www.npmjs.com/package/ramda-destruct)
 
-![demo](https://raw.githubusercontent.com/raine/ramda-destruct/media/demo-2.gif)
+![demo](https://raw.githubusercontent.com/raine/ramda-destruct/media/demo.gif)
 
 Cleans up required or imported [ramda](http://ramdajs.com) functions when
 using destructing assignment.
