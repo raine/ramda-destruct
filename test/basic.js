@@ -1,5 +1,4 @@
-const removeFromObjDstr = require('../src/remove-from-obj-dstr');
-const addToObjDstr = require('../src/add-to-obj-dstr');
+const objDestr = require('../src/obj-destr');
 const { curry, inc, init, last } = require('ramda');
 
 const testFn = curry((fn, cases) =>
@@ -14,7 +13,7 @@ const testFn = curry((fn, cases) =>
   }));
 
 describe('removeFromObjDstr', () => {
-  testFn(removeFromObjDstr, [
+  testFn(objDestr.remove, [
     [ 'map',
       `const { map, filter } = require('ramda');`,
       `const { filter } = require('ramda');` ],
@@ -31,7 +30,7 @@ describe('removeFromObjDstr', () => {
 });
 
 describe('addToObjDstr', () => {
-  testFn(addToObjDstr, [
+  testFn(objDestr.add, [
     [ 'map',
       `const { filter, reduce } = require('ramda');`,
       `const { filter, reduce, map } = require('ramda');` ],
