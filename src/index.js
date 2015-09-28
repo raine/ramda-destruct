@@ -1,8 +1,7 @@
 const linter = require('eslint/lib/eslint');
 const path = require('path');
 const { has, test, reduce, always, T, cond, propEq, match, nth, pipe, allPass, prop, lens, split, join, over, curry, adjust, findIndex, either, __, invoker, prepend, apply } = require('ramda');
-const removeFromObjDstr = require('./remove-from-obj-dstr');
-const addToObjDstr = require('./add-to-obj-dstr');
+const objDestr = require('./obj-destr');
 const readFileStdin = require('read-file-stdin');
 
 const ESLINT_OPTS = {
@@ -51,7 +50,7 @@ const handleEslintMessage = curry((ramda, code, message) => {
       containsRamdaProp
     ]), (message) => {
       const name = parseName(message.message);
-      return adjustLine(removeFromObjDstr(name), message.line - 1, code);
+      return adjustLine(objDestr.remove(name), message.line - 1, code);
     }],
     [ allPass([
       ruleEq('no-undef'),
@@ -59,7 +58,7 @@ const handleEslintMessage = curry((ramda, code, message) => {
     ]), (message) => {
       const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
       const name = parseName(message.message);
-      return adjustLine(addToObjDstr(name), ramdaImportLine, code);
+      return adjustLine(objDestr.add(name), ramdaImportLine, code);
     } ],
     [ T, always(code) ]
   ])(message);
