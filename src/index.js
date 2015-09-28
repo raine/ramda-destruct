@@ -32,11 +32,15 @@ const ruleEq = propEq('ruleId');
 const lines = split('\n');
 const unlines = join('\n');
 const lineLens = lens(lines, unlines);
+
+//    adjustLine :: (String -> String) -> Number -> String
 const adjustLine = curry((fn, n, str) =>
   over(lineLens, adjust(fn, n), str));
 
-//    handleEslintMessage :: Object -> String -> Object -> String
+//    data Message = Object
+//    handleEslintMessage :: Object -> String -> Message -> String
 const handleEslintMessage = curry((ramda, code, message) => {
+  //    containsRamdaProp :: Message -> Boolean
   const containsRamdaProp =
     pipe(prop('message'), parseName, has(__, ramda));
 
@@ -64,7 +68,6 @@ const handleEslintMessage = curry((ramda, code, message) => {
 //    handleEslintOutput :: Object -> [Object] -> String
 const handleEslintOutput = (ramda, messages, code) =>
   reduce(handleEslintMessage(ramda), code, messages);
-
 
 //    fallback :: a -> (b -> a) -> b -> a
 const fallback = curry((def, fn, val) => {
