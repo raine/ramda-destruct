@@ -21,7 +21,7 @@
     "mocha": "^2.3.3"
   },
   "dependencies": {
-    "eslint": "^1.5.1",
+    "eslint": "1.5.1",
     "ramda": "^0.17.1",
     "read-file-stdin": "^0.2.0",
     "splice-string": "^1.0.0"

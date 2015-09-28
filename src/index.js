@@ -1,4 +1,4 @@
-const linter = require('eslint').linter;
+const linter = require('eslint/lib/eslint');
 const path = require('path');
 const { has, test, reduce, always, T, cond, propEq, match, nth, pipe, allPass, prop, lens, split, join, over, curry, adjust, findIndex, either, __, invoker, prepend, apply } = require('ramda');
 const removeFromObjDstr = require('./remove-from-obj-dstr');
