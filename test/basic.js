@@ -15,10 +15,10 @@ const testFn = curry((fn, cases) =>
 describe('removeFromObjDstr', () => {
   testFn(objDestr.remove, [
     [ 'map',
-      `const { map, filter } = require('ramda');`,
+      `const { filter, map } = require('ramda');`,
       `const { filter } = require('ramda');` ],
     [ 'filter',
-      `const { map, filter } = require('ramda');`,
+      `const { filter, map } = require('ramda');`,
       `const { map } = require('ramda');` ],
     [ 'map',
       `const { map } = require('ramda');`,
@@ -34,7 +34,11 @@ describe('removeFromObjDstr', () => {
       `{}` ],
     [ 'bar',
       `whatever`,
-      `whatever` ]
+      `whatever` ],
+    [ '',
+      `{Q, b, c, C}`,
+      `{b, c, C, Q}`
+    ]
   ]);
 });
 
@@ -42,7 +46,7 @@ describe('addToObjDstr', () => {
   testFn(objDestr.add, [
     [ 'map',
       `const { filter, reduce } = require('ramda');`,
-      `const { filter, reduce, map } = require('ramda');` ],
+      `const { filter, map, reduce } = require('ramda');` ],
     [ 'map',
       `const { } = require('ramda');`,
       `const { map } = require('ramda');` ],
@@ -51,7 +55,7 @@ describe('addToObjDstr', () => {
       `const {map} = require('ramda');` ],
     [ 'filter',
       `const {map} = require('ramda');`,
-      `const {map, filter} = require('ramda');` ],
+      `const {filter, map} = require('ramda');` ],
     [ 'bar',
       `{}`,
       `{bar}` ],

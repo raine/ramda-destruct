@@ -1,4 +1,4 @@
-const { equals, append, __, pipe, join, head, curryN, curry, reject, useWith, identity, slice, commute } = require('ramda');
+const { equals, append, __, pipe, join, head, curryN, curry, reject, useWith, identity, slice, commute, sort, gt } = require('ramda');
 const isSpace = equals(' ');
 const spliceStr = curryN(4, require('splice-string'));
 const fmt1 = curryN(2, require('util').format);
@@ -20,6 +20,8 @@ const operate = curry((op, name, line) =>
       .map(names =>
         pipe(
           op(__, names),
+          uniq,
+          sortBy(toLower),
           join(', '),
           fmt1(hasSpaceFirst ? '{ %s }' : '{%s}'),
           spliceStr(line, braceStart, removeAfterStart)
