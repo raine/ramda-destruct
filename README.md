@@ -1,4 +1,4 @@
-# ramda-destruct [![npm version](https://badge.fury.io/js/ramda-destruct.svg)](https://www.npmjs.com/package/ramda-destruct)
+# ramda-destruct [![npm version](https://badge.fury.io/js/ramda-destruct.svg)](https://www.npmjs.com/package/ramda-destruct) [![Build Status](https://travis-ci.org/raine/ramda-destruct.svg?branch=master)](https://travis-ci.org/raine/ramda-destruct)
 
 ![demo](https://raw.githubusercontent.com/raine/ramda-destruct/media/demo.gif)
 
