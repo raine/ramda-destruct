@@ -6,6 +6,7 @@ const S = require('sanctuary');
 const { Just, Maybe } = S;
 const $do = require('fantasydo');
 
+//    operate :: (a -> [a] -> [a]) -> String -> String
 const operate = curry((op, name, line) =>
   S.fromMaybe(line, $do(function* () {
     const braceStart = yield S.indexOf('{', line);
