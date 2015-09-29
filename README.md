@@ -2,8 +2,10 @@
 
 ![demo](https://raw.githubusercontent.com/raine/ramda-destruct/media/demo.gif)
 
-Cleans up required or imported [ramda](http://ramdajs.com) functions when
-using destructing assignment.
+- Cleans up required or imported [Ramda](http://ramdajs.com) functions when
+  using destructing assignment.
+- Reads functions from local Ramda instance based on the current working
+  directory.
 
 ## install
 
