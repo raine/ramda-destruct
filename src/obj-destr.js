@@ -1,4 +1,4 @@
-const { equals, append, __, pipe, join, head, curryN, curry, reject, useWith, identity, slice, commute, sort, gt } = require('ramda');
+const { __, append, commute, curry, curryN, equals, head, identity, join, pipe, reject, slice, sortBy, toLower, uniq, useWith } = require('ramda');
 const isSpace = equals(' ');
 const spliceStr = curryN(4, require('splice-string'));
 const fmt1 = curryN(2, require('util').format);
