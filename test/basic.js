@@ -25,7 +25,16 @@ describe('removeFromObjDstr', () => {
       `const {  } = require('ramda');` ],
     [ 'bar',
       `const { foo, bar, xyz } = require('ramda');`,
-      `const { foo, xyz } = require('ramda');` ]
+      `const { foo, xyz } = require('ramda');` ],
+    [ 'bar',
+      `const { } = require('ramda');`,
+      `const {  } = require('ramda');` ],
+    [ 'bar',
+      `{}`,
+      `{}` ],
+    [ 'bar',
+      `whatever`,
+      `whatever` ]
   ]);
 });
 
@@ -42,6 +51,12 @@ describe('addToObjDstr', () => {
       `const {map} = require('ramda');` ],
     [ 'filter',
       `const {map} = require('ramda');`,
-      `const {map, filter} = require('ramda');` ]
+      `const {map, filter} = require('ramda');` ],
+    [ 'bar',
+      `{}`,
+      `{bar}` ],
+    [ 'bar',
+      `whatever`,
+      `whatever` ]
   ]);
 });

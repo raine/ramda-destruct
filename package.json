@@ -24,6 +24,7 @@
     "eslint": "1.5.1",
     "ramda": "^0.17.1",
     "read-file-stdin": "^0.2.0",
+    "sanctuary": "^0.7.1",
     "splice-string": "^1.0.0"
   }
 }
