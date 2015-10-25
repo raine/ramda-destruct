@@ -31,7 +31,7 @@ const operate = curry((op, name, line) =>
 );
 
 //    without :: a -> [a] -> [a]
-const without = useWith(reject, equals, identity);
+const without = useWith(reject, [ equals, identity ]);
 
 exports.remove = operate(without);
 exports.add    = operate(append);
