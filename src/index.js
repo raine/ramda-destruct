@@ -18,7 +18,7 @@ const ESLINT_OPTS = {
 };
 
 const deunderscore = curry((x, str) =>
-  replace(`__${x}__`, x, str))
+  replace(`__${x}__`, x, str));
 
 //    lineImportsRamda :: String -> Boolean
 const lineImportsRamda =
@@ -64,18 +64,17 @@ const handleEslintMessage = curry((ramda, code, message) => {
     ]), (message) => {
       const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
       const name = parseName(message.message);
-      return pipe(
-        adjustLine(objDestr.add(name), ramdaImportLine),
-        adjustLine(deunderscore('toString'), message.line - 1)
-      )(code)
+      return adjustLine(objDestr.add(name), ramdaImportLine, code);
     } ],
     [ T, always(code) ]
   ])(message);
 });
 
 //    handleEslintOutput :: Object -> [Object] -> String
-const handleEslintOutput = (ramda, messages, code) =>
-  reduce(handleEslintMessage(ramda), code, messages);
+const handleEslintOutput =
+  pipe((ramda, messages, code) =>
+         reduce(handleEslintMessage(ramda), code, messages),
+       replace(/\b__toString__\b/g, 'toString'));
 
 //    fallback :: a -> (b -> a) -> b -> a
 const fallback = curry((def, fn, val) => {
@@ -98,7 +97,7 @@ const main = (process) => {
   readFileStdin(process.argv[2], (err, buf) => {
     const localRamda = resolveRamda(process);
     const input = buf.toString()
-      .replace(/\btoString\b/g, '__toString__')
+      .replace(/toString\b/g, '__toString__');
     const messages = linter.verify(input, ESLINT_OPTS);
     const output = handleEslintOutput(localRamda, messages, input);
     process.stdout.write(output);
