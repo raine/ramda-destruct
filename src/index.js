@@ -1,6 +1,6 @@
 const linter = require('eslint/lib/eslint');
 const path = require('path');
-const { __, adjust, allPass, always, apply, cond, curry, either, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, replace, split, T, test } = require('ramda-t');
+const { __, adjust, allPass, always, apply, cond, curry, either, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, replace, split, T, test } = require('ramda');
 const objDestr = require('./obj-destr');
 const readFileStdin = require('read-file-stdin');
 
