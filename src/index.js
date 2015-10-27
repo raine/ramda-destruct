@@ -1,6 +1,6 @@
 const linter = require('eslint/lib/eslint');
 const path = require('path');
-const { __, adjust, allPass, always, apply, cond, curry, either, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, split, T, test } = require('ramda');
+const { __, adjust, allPass, always, apply, cond, curry, either, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, replace, split, T, test } = require('ramda-t');
 const objDestr = require('./obj-destr');
 const readFileStdin = require('read-file-stdin');
 
@@ -17,13 +17,19 @@ const ESLINT_OPTS = {
   }
 };
 
+const deunderscore = curry((x, str) =>
+  replace(`__${x}__`, x, str))
+
 //    lineImportsRamda :: String -> Boolean
 const lineImportsRamda =
   either(test(/require\(['"]ramda['"]\)/),
          test(/from ['"]ramda['"]/));
 
 //    parseName :: String -> String
-const parseName = pipe( match(/^"([^"]*?)"/), nth(1) );
+const parseName =
+  pipe(match(/^"([^"]*?)"/),
+       nth(1),
+       deunderscore('toString'));
 
 //    ruleEq :: String -> Object -> Boolean
 const ruleEq = propEq('ruleId');
@@ -58,7 +64,10 @@ const handleEslintMessage = curry((ramda, code, message) => {
     ]), (message) => {
       const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
       const name = parseName(message.message);
-      return adjustLine(objDestr.add(name), ramdaImportLine, code);
+      return pipe(
+        adjustLine(objDestr.add(name), ramdaImportLine),
+        adjustLine(deunderscore('toString'), message.line - 1)
+      )(code)
     } ],
     [ T, always(code) ]
   ])(message);
@@ -88,7 +97,8 @@ const resolveRamda =
 const main = (process) => {
   readFileStdin(process.argv[2], (err, buf) => {
     const localRamda = resolveRamda(process);
-    const input = buf.toString();
+    const input = buf.toString()
+      .replace(/\btoString\b/g, '__toString__')
     const messages = linter.verify(input, ESLINT_OPTS);
     const output = handleEslintOutput(localRamda, messages, input);
     process.stdout.write(output);
