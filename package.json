@@ -1,6 +1,6 @@
 {
   "name": "ramda-destruct",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Cleans up required ramda functions when using destructuring assignment",
   "scripts": {
     "test": "mocha",
