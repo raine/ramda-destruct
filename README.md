@@ -41,3 +41,7 @@ that restores cursor position after:
 ```
 :call Preserve("%!ramda-destruct")
 ```
+
+#### emacs
+
+https://gist.github.com/yrns/e9b0cf1c24a87812e1ecab9816823f4c
