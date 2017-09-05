@@ -23,7 +23,7 @@
   "dependencies": {
     "eslint": "1.5.1",
     "fantasydo": "0.0.0",
-    "ramda": "0.21.x",
+    "ramda": "0.24.x",
     "read-file-stdin": "^0.2.0",
     "sanctuary": "^0.7.1",
     "splice-string": "^1.0.0"
