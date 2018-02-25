@@ -8,6 +8,7 @@ const {
   uniq
 } = require('ramda');
 const objDestr = require('./obj-destr');
+const justifyDestr = require('./justify-destr');
 const readFileStdin = require('read-file-stdin');
 
 const ESLINT_OPTS = {
@@ -51,54 +52,6 @@ const lineLens = lens(lines, unlines);
 const adjustLine = curry((fn, n, str) =>
   over(lineLens, adjust(fn, n), str));
 
-const justify =
-  curry((width, indent, arr) => reduce(
-    (acc, f) => isEmpty(acc)
-    ? acc.concat([[repeat(' ', indent).join('') + f]])
-    : last(acc).concat([f]).join(', ').length > width
-      ? init(acc).concat([last(acc).concat([f])]).concat([[]])
-      : init(acc).concat([last(acc).concat([repeat(' ', indent).join('') + f])])
-    , [], arr))
-
-const ramdaregex = /([^]*?)(const {[^]*?} = require\(['"]ramda['"]\)|const {[^]*?} = R)([^]*)/
-
-const serversideregex = /const {([^]*)} = require\(['"]ramda['"]\)/
-
-const clientsideregex = /const {([^]*)} = R/
-
-const adjustDestructuring =
-  ({fnToAdd = null, fnToRemove = null}, code) => {
-    let [full, before, matched, after] = defaultTo([], code.match(ramdaregex))
-    if (!matched) {
-      return code
-    }
-    let isramdadestruct = matched.indexOf('ramda') > 0 // otherwise its ramda exposed as R
-    let destructuredfnsregex = isramdadestruct ? serversideregex : clientsideregex
-    let [dontcare, destructuredfns] = matched.match(destructuredfnsregex)
-    let fnsarr = compose(
-      sortBy(identity),
-      uniq,
-      arr => fnToAdd ? append(fnToAdd, arr) : reject(equals(fnToRemove), arr),
-      map(fn => fn.replace('\n', '')),
-      reject(isEmpty),
-      map(trim),
-      chain(line => line.split(', ')),
-      split(',\n')
-    )(destructuredfns)
-
-    let fnsstr = isEmpty(fnsarr)
-      ? ''
-      : compose(
-        join(''),
-        reverse,
-        ([lastline, ...everythingbefore]) => [lastline + '\n'].concat(everythingbefore.map(str => str + ',\n')),
-        reverse,
-        map(([first, ...rest]) => [first].concat(rest.map(trim)).join(', ')),
-        justify(80, 2)
-      )(fnsarr)
-
-    return before + 'const {\n'+fnsstr+'} = ' + (isramdadestruct ? 'require(\'ramda\')' : 'R') + after
-  }
 
 //    data Message = Object
 //    handleEslintMessage :: Object -> String -> Message -> String
@@ -114,14 +67,14 @@ const handleEslintMessage = curry((ramda, code, message) => {
       containsRamdaProp
     ]), (message) => {
       const name = parseName(message.message);
-      return adjustDestructuring({fnToRemove: name}, code)
+      return justifyDestr.remove(name, code)
     }],
     [ allPass([
       ruleEq('no-undef'),
       containsRamdaProp
     ]), (message) => {
       let name = parseName(message.message)
-      return adjustDestructuring({fnToAdd: name}, code)
+      return justifyDestr.add(name, code)
     } ],
     [ T, always(code) ]
   ])(message);
