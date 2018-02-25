@@ -1,6 +1,12 @@
 const linter = require('eslint/lib/eslint');
 const path = require('path');
-const { __, adjust, allPass, always, anyPass, apply, cond, curry, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, replace, split, T, test } = require('ramda');
+const {
+  T, __, adjust, allPass, always, anyPass, append, apply, chain, compose,
+  cond, curry, defaultTo, equals, has, identity, init, invoker, isEmpty,
+  join, last, lens, map, match, nth, over, pipe, prepend, prop, propEq,
+  reduce, reject, repeat, replace, reverse, sortBy, split, test, trim,
+  uniq
+} = require('ramda');
 const objDestr = require('./obj-destr');
 const readFileStdin = require('read-file-stdin');
 
@@ -45,6 +51,55 @@ const lineLens = lens(lines, unlines);
 const adjustLine = curry((fn, n, str) =>
   over(lineLens, adjust(fn, n), str));
 
+const justify =
+  curry((width, indent, arr) => reduce(
+    (acc, f) => isEmpty(acc)
+    ? acc.concat([[repeat(' ', indent).join('') + f]])
+    : last(acc).concat([f]).join(', ').length > width
+      ? init(acc).concat([last(acc).concat([f])]).concat([[]])
+      : init(acc).concat([last(acc).concat([repeat(' ', indent).join('') + f])])
+    , [], arr))
+
+const ramdaregex = /([^]*?)(const {[^]*?} = require\(['"]ramda['"]\)|const {[^]*?} = R)([^]*)/
+
+const serversideregex = /const {([^]*)} = require\(['"]ramda['"]\)/
+
+const clientsideregex = /const {([^]*)} = R/
+
+const adjustDestructuring =
+  ({fnToAdd = null, fnToRemove = null}, code) => {
+    let [full, before, matched, after] = defaultTo([], code.match(ramdaregex))
+    if (!matched) {
+      return code
+    }
+    let isramdadestruct = matched.indexOf('ramda') > 0 // otherwise its ramda exposed as R
+    let destructuredfnsregex = isramdadestruct ? serversideregex : clientsideregex
+    let [dontcare, destructuredfns] = matched.match(destructuredfnsregex)
+    let fnsarr = compose(
+      sortBy(identity),
+      uniq,
+      arr => fnToAdd ? append(fnToAdd, arr) : reject(equals(fnToRemove), arr),
+      map(fn => fn.replace('\n', '')),
+      reject(isEmpty),
+      map(trim),
+      chain(line => line.split(', ')),
+      split(',\n')
+    )(destructuredfns)
+
+    let fnsstr = isEmpty(fnsarr)
+      ? ''
+      : compose(
+        join(''),
+        reverse,
+        ([lastline, ...everythingbefore]) => [lastline + '\n'].concat(everythingbefore.map(str => str + ',\n')),
+        reverse,
+        map(([first, ...rest]) => [first].concat(rest.map(trim)).join(', ')),
+        justify(80, 2)
+      )(fnsarr)
+
+    return before + 'const {\n'+fnsstr+'} = ' + (isramdadestruct ? 'require(\'ramda\')' : 'R') + after
+  }
+
 //    data Message = Object
 //    handleEslintMessage :: Object -> String -> Message -> String
 const handleEslintMessage = curry((ramda, code, message) => {
@@ -59,15 +114,14 @@ const handleEslintMessage = curry((ramda, code, message) => {
       containsRamdaProp
     ]), (message) => {
       const name = parseName(message.message);
-      return adjustLine(objDestr.remove(name), message.line - 1, code);
+      return adjustDestructuring({fnToRemove: name}, code)
     }],
     [ allPass([
       ruleEq('no-undef'),
       containsRamdaProp
     ]), (message) => {
-      const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
-      const name = parseName(message.message);
-      return adjustLine(objDestr.add(name), ramdaImportLine, code);
+      let name = parseName(message.message)
+      return adjustDestructuring({fnToAdd: name}, code)
     } ],
     [ T, always(code) ]
   ])(message);
