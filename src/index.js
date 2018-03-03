@@ -28,18 +28,18 @@ const deunderscore = curry((x, str) =>
   replace(`__${x}__`, x, str));
 
 //    lineImportsRamda :: String -> Boolean
-const lineImportsRamda =
-  anyPass([
-    test(/require\(['"]ramda['"]\)/),
-    test(/{[a-zA-Z\s,_]*} = R/),
-    test(/from ['"]ramda['"]/)
-  ]);
+// const lineImportsRamda = anyPass([
+//     test(/require\(['"]ramda['"]\)/),
+//     test(/{[a-zA-Z\s,_]*} = R/),
+//     test(/from ['"]ramda['"]/)
+//   ]);
 
 //    parseName :: String -> String
-const parseName =
-  pipe(match(/^"([^"]*?)"/),
-       nth(1),
-       deunderscore('toString'));
+const parseName = pipe(
+  match(/^"([^"]*?)"/),
+  nth(1),
+  deunderscore('toString')
+);
 
 //    ruleEq :: String -> Object -> Boolean
 const ruleEq = propEq('ruleId');
@@ -63,7 +63,6 @@ const handleEslintMessage = curry((ramda, code, message) => {
   return cond([
     [ allPass([
       ruleEq('no-unused-vars'),
-      pipe(prop('source'), lineImportsRamda),
       containsRamdaProp
     ]), (message) => {
       const name = parseName(message.message);
