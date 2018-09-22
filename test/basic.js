@@ -1,4 +1,4 @@
-const objDestr = require('../src/obj-destr');
+const objDestr = require('../lib/obj-destr');
 const { curry, inc, init, last } = require('ramda');
 
 const testFn = curry((fn, cases) =>

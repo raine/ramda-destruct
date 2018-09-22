@@ -1,4 +1,4 @@
-const justifyDestr = require('../src/justify-destr')
+const justifyDestr = require('../lib/justify-destr')
 
 describe('justify destructuring', () => {
   it('should leave code as is when there is no ramda import', () => {
