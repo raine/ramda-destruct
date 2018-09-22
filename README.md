@@ -52,6 +52,6 @@ Install the [FilterPipes plugin](https://packagecontrol.io/packages/FilterPipes)
 { "keys": ["alt+shift+d"], "command": "filter_pipes_process", "args": {"command": "ramda-destruct"}}
 ```
 
-#### Contributors
+## Contributors
 
 Big thanks to [Bijoy Thomas](https://github.com/bijoythomas) for his contributions.
