@@ -1,7 +1,14 @@
 const linter = require('eslint/lib/eslint');
 const path = require('path');
-const { __, adjust, allPass, always, apply, cond, curry, either, findIndex, has, invoker, join, lens, match, nth, over, pipe, prepend, prop, propEq, reduce, replace, split, T, test } = require('ramda');
+const {
+  T, __, adjust, allPass, always, anyPass, append, apply, chain, compose,
+  cond, curry, defaultTo, equals, has, identity, init, invoker, isEmpty,
+  join, last, lens, map, match, nth, over, pipe, prepend, prop, propEq,
+  reduce, reject, repeat, replace, reverse, sortBy, split, test, trim,
+  uniq
+} = require('ramda');
 const objDestr = require('./obj-destr');
+const justifyDestr = require('./justify-destr');
 const readFileStdin = require('read-file-stdin');
 
 const ESLINT_OPTS = {
@@ -21,15 +28,18 @@ const deunderscore = curry((x, str) =>
   replace(`__${x}__`, x, str));
 
 //    lineImportsRamda :: String -> Boolean
-const lineImportsRamda =
-  either(test(/require\(['"]ramda['"]\)/),
-         test(/from ['"]ramda['"]/));
+// const lineImportsRamda = anyPass([
+//     test(/require\(['"]ramda['"]\)/),
+//     test(/{[a-zA-Z\s,_]*} = R/),
+//     test(/from ['"]ramda['"]/)
+//   ]);
 
 //    parseName :: String -> String
-const parseName =
-  pipe(match(/^"([^"]*?)"/),
-       nth(1),
-       deunderscore('toString'));
+const parseName = pipe(
+  match(/^"([^"]*?)"/),
+  nth(1),
+  deunderscore('toString')
+);
 
 //    ruleEq :: String -> Object -> Boolean
 const ruleEq = propEq('ruleId');
@@ -42,6 +52,7 @@ const lineLens = lens(lines, unlines);
 const adjustLine = curry((fn, n, str) =>
   over(lineLens, adjust(fn, n), str));
 
+
 //    data Message = Object
 //    handleEslintMessage :: Object -> String -> Message -> String
 const handleEslintMessage = curry((ramda, code, message) => {
@@ -52,19 +63,17 @@ const handleEslintMessage = curry((ramda, code, message) => {
   return cond([
     [ allPass([
       ruleEq('no-unused-vars'),
-      pipe(prop('source'), lineImportsRamda),
       containsRamdaProp
     ]), (message) => {
       const name = parseName(message.message);
-      return adjustLine(objDestr.remove(name), message.line - 1, code);
+      return justifyDestr.remove(name, code)
     }],
     [ allPass([
       ruleEq('no-undef'),
       containsRamdaProp
     ]), (message) => {
-      const ramdaImportLine = findIndex(lineImportsRamda, lines(code));
-      const name = parseName(message.message);
-      return adjustLine(objDestr.add(name), ramdaImportLine, code);
+      let name = parseName(message.message)
+      return justifyDestr.add(name, code)
     } ],
     [ T, always(code) ]
   ])(message);

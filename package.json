@@ -16,14 +16,15 @@
   "author": "Raine Virta <raine.virta@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "babel": "^5.8.23",
+    "babel-cli": "^6.26.0",
+    "babel-register": "^6.26.0",
     "chai": "^3.3.0",
     "mocha": "^2.3.3"
   },
   "dependencies": {
     "eslint": "1.5.1",
     "fantasydo": "0.0.0",
-    "ramda": "0.21.x",
+    "ramda": "0.25.0",
     "read-file-stdin": "^0.2.0",
     "sanctuary": "^0.7.1",
     "splice-string": "^1.0.0"
